@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <style>
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Registration Form- <span>Izhar</span></h1>
+    <form id="registrationForm" name="registrationForm" enctype="multipart/form-data" action="process_registration.php"
+        method="post" onsubmit="return formSubmit()">
+        <!-- First Name -->
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" placeholder="Enter Your First Name" required
+            oninput="restrictFirstNameInput()">
+        <span class="fn_error error-message" id="first_name_error" style="color: red;"></span>
+
+        <!-- Last Name -->
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" placeholder="Enter Your Last Name" required
+            oninput="restrictLastNameInput()">
+        <div class="ln_error error-message" id="last_name_error" style="color: red;"></div>
+
+        <!-- Guardian Name -->
+        <label for="guardian_name">Guardian Name:</label>
+        <input type="text" id="guardian_name" name="guardian_name" placeholder="Enter Your Guardian Name" required
+            oninput="validateGuardianName()">
+        <div class="error_guardian_name error-message" id="guardian_name_error" style="color: red;"></div>
+
+        <!-- Email -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" maxlength="30" placeholder="Enter Your Personal Email ID" required
+            oninput="validateEmail()">
+        <div class="email" id="email_error" style="color: red;"></div>
+
+        <!-- Password -->
+        <div class="password">
+            <div class="pass1">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" maxlength="16" placeholder="Enter your Password"
+                    required oninput="validatePassword()">
+                <img onclick="toggleVisibility()" src="images/download.png" alt="">
+                <!-- Show Password Checkbox -->
+                <!-- <input type="checkbox" id="password_visibility_checkbox" onclick="togglePasswordVisibility()">
+                <label for="password_visibility_checkbox">Show Password</label> -->
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="pass2">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" maxlength="16"
+                    placeholder="Confirm Your Password" required oninput="validatePassword()">
+                <!-- <div class="pass_check" id="confirm_password_error" style="color: red;"></div> -->
+                <div class="pass_check" id="password_error" style="color: red;"></div>
+            </div>
+        </div>
+
+        <!-- Gender -->
+        <label>Gender:</label>
+        <div class="male">
+            <input type="radio" id="male" name="gender" value="male" id="male">
+            <label for="male">Male</label>
+        </div>
+        <div class="female">
+            <input type="radio" id="female" name="gender" value="female" id="female">
+            <label for="female">Female</label>
+
+        </div>
+        <div class="gender_check" id="gender_error" style="color: red;"></div>
+        <!-- <input type="radio" name="gender" value="other" id="other"><label for="other">Other</label> -->
+
+        <!-- Date of Birth -->
+        <div class="dob">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required min="1900-01-01" onclick="dobValidation()">
+            <div class="dob_ckeck" id='dob_error' style="color: red; font-size: 12px;"></div>
+        </div>
+
+        <!-- Country with Code -->
+        <label for="country">Country:</label>
+        <select id="country" name="country" onchange="validateCountry()">
+            <option value="">Select your Country</option>
+            <option value="USA">USA (+1)</option>
+            <option value="China">China (+86)</option>
+            <option value="India">India (+91)</option>
+        </select>
+        <div class="country" id='country_error' style="color: red; font-size: 12px;"></div>
+
+        <!-- Mobile Number -->
+        <label for="mobile_number">Mobile Number:</label>
+        <input type="tel" id="mobile_number" name="mobile_number" placeholder="Enter Your Mobile Number" required
+            disabled oninput="validateMobileNumber()">
+        <div class="mob_error" id="mobile_number_error" style="color: red;"></div>
+
+        <!-- Address -->
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="4" cols="60" placeholder="Enter Your Permanent Address" required
+            oninput="validateAddress()"></textarea>
+        <div class="add_error" id="address_error" style="color: red;"></div>
+
+        <!-- Pin Code -->
+        <label for="pin_code">ZIP Code:</label>
+        <input type="text" id="pin_code" name="pin_code" placeholder="Enter Your City PIN Code" required disabled
+            oninput="validatePinCode()">
+        <div class="pin_error" id="pin_code_error" style="color: red;"></div>
+
+        <!-- Image File Selection -->
+        <div class="image">
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image" name="image" accept=".jpg, .png, .jpeg" oninput="validateImage()" required>
+            <div class="img_error" id="imageError" style="color: red;"></div>
+        </div>
+
+        <!-- PDF File Selection -->
+        <div class="file">
+            <label for="pdf">Upload PDF:</label>
+            <input type="file" id="pdf" name="pdf" accept=".pdf" oninput="validatePdf()" required>
+            <div class="pdf_error" id="pdfError" style="color: red;"></div>
+        </div>
+
+        <!-- Terms and Conditions Checkbox -->
+        <label for="terms">
+            <input type="checkbox" id="terms" name="terms" id="terms" required>
+            I agree to the Terms & Conditions
+        </label>
+
+        <!-- Register Button -->
+        <input class="register" type="Submit" value="Register" onclick="validateForm()">
+    </form>
+
+
+
+    <script>
+        // Show Password 
+        function toggleVisibility() {
+            var getPasword = document.getElementById("password");
+            if (getPasword.type === "password") {
+                getPasword.type = "text";
+            } else {
+                getPasword.type = "password";
+            }
+        }
+
+        // // Todays Live Date for DOB 
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+
+        // Set the max attribute for the date of birth field
+        document.getElementById("dob").setAttribute("max", today);
+
+    </script>
+</body>
+
+</html>
